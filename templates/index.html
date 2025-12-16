@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Heart Disease Prediction</title>
+
+<style>
+:root {
+  --primary: #b30000;
+  --secondary: #f8d7da;
+  --bg: #f4f6f8;
+  --card: #ffffff;
+  --text: #333;
+}
+
+* {
+  box-sizing: border-box;
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+body {
+  background: linear-gradient(135deg, #f4f6f8, #e9ecef);
+  margin: 0;
+  padding: 40px;
+  display: flex;
+  justify-content: center;
+}
+
+.container {
+  width: 100%;
+  max-width: 900px;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.header h2 {
+  color: var(--primary);
+  font-size: 32px;
+  margin-bottom: 5px;
+}
+
+.header p {
+  color: #666;
+  font-size: 15px;
+}
+
+.card {
+  background: var(--card);
+  padding: 30px;
+  border-radius: 14px;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+}
+
+.section-title {
+  font-size: 18px;
+  color: var(--primary);
+  border-left: 5px solid var(--primary);
+  padding-left: 10px;
+  margin: 30px 0 15px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 15px;
+}
+
+label {
+  font-size: 13px;
+  color: #555;
+  font-weight: 600;
+}
+
+input, select {
+  width: 100%;
+  padding: 9px 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  transition: all 0.3s;
+}
+
+input:focus, select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(179,0,0,0.15);
+}
+
+button {
+  margin-top: 30px;
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, #b30000, #ff4d4d);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 17px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(179,0,0,0.3);
+}
+
+#result {
+  margin-top: 25px;
+  padding: 15px;
+  border-radius: 10px;
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+  display: none;
+}
+
+.result-safe {
+  background: #d4edda;
+  color: #155724;
+}
+
+.result-risk {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.footer {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 12px;
+  color: #888;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="header">
+    <h2>Heart Disease Risk Prediction</h2>
+    <p>AI-based medical decision support system</p>
+  </div>
+
+  <div class="card">
+    <form id="heartForm">
+
+      <div class="section-title">Personal Details</div>
+      <div class="form-grid">
+        <div><label>Age</label><input type="number" id="Age" required></div>
+        <div><label>Gender</label>
+          <select id="Gender">
+            <option>Male</option>
+            <option>Female</option>
+          </select>
+        </div>
+        <div><label>Weight (kg)</label><input type="number" id="Weight" required></div>
+        <div><label>Height (cm)</label><input type="number" id="Height" required></div>
+        <div><label>BMI</label><input type="number" step="0.1" id="BMI" required></div>
+      </div>
+
+      <div class="section-title">Lifestyle Factors</div>
+      <div class="form-grid">
+        <div><label>Smoking</label>
+          <select id="Smoking">
+            <option>Never</option><option>Former</option><option>Current</option>
+          </select>
+        </div>
+        <div><label>Alcohol Intake</label>
+          <select id="Alcohol_Intake">
+            <option>None</option><option>Moderate</option><option>Heavy</option>
+          </select>
+        </div>
+        <div><label>Physical Activity</label>
+          <select id="Physical_Activity">
+            <option>Sedentary</option><option>Moderate</option><option>Active</option>
+          </select>
+        </div>
+        <div><label>Diet</label>
+          <select id="Diet">
+            <option>Healthy</option><option>Average</option><option>Unhealthy</option>
+          </select>
+        </div>
+        <div><label>Stress Level</label>
+          <select id="Stress_Level">
+            <option>Low</option><option>Medium</option><option>High</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="section-title">Medical History</div>
+      <div class="form-grid">
+        <div><label>Hypertension</label><select id="Hypertension"><option value="0">No</option><option value="1">Yes</option></select></div>
+        <div><label>Diabetes</label><select id="Diabetes"><option value="0">No</option><option value="1">Yes</option></select></div>
+        <div><label>Hyperlipidemia</label><select id="Hyperlipidemia"><option value="0">No</option><option value="1">Yes</option></select></div>
+        <div><label>Family History</label><select id="Family_History"><option value="0">No</option><option value="1">Yes</option></select></div>
+        <div><label>Previous Heart Attack</label><select id="Previous_Heart_Attack"><option value="0">No</option><option value="1">Yes</option></select></div>
+      </div>
+
+      <div class="section-title">Clinical Measurements</div>
+      <div class="form-grid">
+        <div><label>Systolic BP</label><input type="number" id="Systolic_BP" required></div>
+        <div><label>Diastolic BP</label><input type="number" id="Diastolic_BP" required></div>
+        <div><label>Heart Rate</label><input type="number" id="Heart_Rate" required></div>
+        <div><label>Fasting Blood Sugar</label><input type="number" id="Blood_Sugar_Fasting" required></div>
+        <div><label>Total Cholesterol</label><input type="number" id="Cholesterol_Total" required></div>
+      </div>
+
+      <button type="button" onclick="predict()">Predict Risk</button>
+
+    </form>
+
+    <div id="result"></div>
+  </div>
+
+  <div class="footer">
+    © AI Medical Assistant | Educational Use Only
+  </div>
+
+</div>
+
+<script>
+function predict() {
+
+  const data = {
+    Age: +Age.value,
+    Gender: Gender.value,
+    Weight: +Weight.value,
+    Height: +Height.value,
+    BMI: +BMI.value,
+    Smoking: Smoking.value,
+    Alcohol_Intake: Alcohol_Intake.value,
+    Physical_Activity: Physical_Activity.value,
+    Diet: Diet.value,
+    Stress_Level: Stress_Level.value,
+    Hypertension: +Hypertension.value,
+    Diabetes: +Diabetes.value,
+    Hyperlipidemia: +Hyperlipidemia.value,
+    Family_History: +Family_History.value,
+    Previous_Heart_Attack: +Previous_Heart_Attack.value,
+    Systolic_BP: +Systolic_BP.value,
+    Diastolic_BP: +Diastolic_BP.value,
+    Heart_Rate: +Heart_Rate.value,
+    Blood_Sugar_Fasting: +Blood_Sugar_Fasting.value,
+    Cholesterol_Total: +Cholesterol_Total.value
+  };
+
+  fetch("/predict", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify(data)
+  })
+  .then(res => res.json())
+  .then(result => {
+    const box = document.getElementById("result");
+    box.style.display = "block";
+    box.className = result.prediction.includes("Detected") ? "result-risk" : "result-safe";
+    box.innerHTML = `${result.prediction}<br>Risk Probability: ${result.probability}%`;
+  });
+}
+</script>
+
+</body>
+</html>
